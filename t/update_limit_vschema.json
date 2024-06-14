@@ -1,0 +1,50 @@
+{
+  "keyspaces": {
+    "newtest": {
+      "sharded": true,
+      "vindexes": {
+        "xxhash": {
+          "type": "xxhash"
+        }
+      },
+      "tables": {
+        "searches_providers": {
+          "column_vindexes": [
+            {
+              "column": "keyword_id",
+              "name": "xxhash",
+              "type": "xxhash"
+            }
+          ]
+        },
+        "searches_providers_serps": {
+          "column_vindexes": [
+            {
+              "column": "keyword_id",
+              "name": "xxhash",
+              "type": "xxhash"
+            }
+          ]
+        },
+        "searches_providers_serps_pipeline": {
+          "column_vindexes": [
+            {
+              "column": "keyword_id",
+              "name": "xxhash",
+              "type": "xxhash"
+            }
+          ]
+        },
+        "rankings": {
+          "column_vindexes": [
+            {
+              "column": "keyword_id",
+              "name": "xxhash",
+              "type": "xxhash"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
