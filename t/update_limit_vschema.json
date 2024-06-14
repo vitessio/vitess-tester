@@ -1,6 +1,6 @@
 {
   "keyspaces": {
-    "newtest": {
+    "update_limit": {
       "sharded": true,
       "vindexes": {
         "xxhash": {
