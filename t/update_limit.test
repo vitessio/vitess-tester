@@ -36,82 +36,101 @@ CREATE TABLE searches_providers_serps_pipeline (
     INDEX (serp_id, keyword_id)
 );
 
-# Insert 30 rows into searches_providers
-INSERT INTO searches_providers (search_provider_id, search_id, keyword_id)
-VALUES
-    (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4), (5, 5, 5),
-    (6, 6, 6), (7, 7, 7), (8, 8, 8), (9, 9, 9), (10, 10, 10),
-    (11, 11, 11), (12, 12, 12), (13, 13, 13), (14, 14, 14), (15, 15, 15),
-    (16, 16, 16), (17, 17, 17), (18, 18, 18), (19, 19, 19), (20, 20, 20),
-    (21, 21, 21), (22, 22, 22), (23, 23, 23), (24, 24, 24), (25, 25, 25),
-    (26, 26, 26), (27, 27, 27), (28, 28, 28), (29, 29, 29), (30, 30, 30);
-
-# Insert 30 rows into searches_providers_serps
-INSERT INTO searches_providers_serps (serp_id, search_provider_id, keyword_id, html_loc, extractor_version_id, proto_loc)
-VALUES
-    (1, 1, 1, 'html_loc1', 1, 'proto_loc1'), (2, 2, 2, 'html_loc2', 2, 'proto_loc2'),
-    (3, 3, 3, 'html_loc3', 3, 'proto_loc3'), (4, 4, 4, 'html_loc4', 4, 'proto_loc4'),
-    (5, 5, 5, 'html_loc5', 5, 'proto_loc5'), (6, 6, 6, 'html_loc6', 6, 'proto_loc6'),
-    (7, 7, 7, 'html_loc7', 7, 'proto_loc7'), (8, 8, 8, 'html_loc8', 8, 'proto_loc8'),
-    (9, 9, 9, 'html_loc9', 9, 'proto_loc9'), (10, 10, 10, 'html_loc10', 10, 'proto_loc10'),
-    (11, 11, 11, 'html_loc11', 11, 'proto_loc11'), (12, 12, 12, 'html_loc12', 12, 'proto_loc12'),
-    (13, 13, 13, 'html_loc13', 13, 'proto_loc13'), (14, 14, 14, 'html_loc14', 14, 'proto_loc14'),
-    (15, 15, 15, 'html_loc15', 15, 'proto_loc15'), (16, 16, 16, 'html_loc16', 16, 'proto_loc16'),
-    (17, 17, 17, 'html_loc17', 17, 'proto_loc17'), (18, 18, 18, 'html_loc18', 18, 'proto_loc18'),
-    (19, 19, 19, 'html_loc19', 19, 'proto_loc19'), (20, 20, 20, 'html_loc20', 20, 'proto_loc20'),
-    (21, 21, 21, 'html_loc21', 21, 'proto_loc21'), (22, 22, 22, 'html_loc22', 22, 'proto_loc22'),
-    (23, 23, 23, 'html_loc23', 23, 'proto_loc23'), (24, 24, 24, 'html_loc24', 24, 'proto_loc24'),
-    (25, 25, 25, 'html_loc25', 25, 'proto_loc25'), (26, 26, 26, 'html_loc26', 26, 'proto_loc26'),
-    (27, 27, 27, 'html_loc27', 27, 'proto_loc27'), (28, 28, 28, 'html_loc28', 28, 'proto_loc28'),
-    (29, 29, 29, 'html_loc29', 29, 'proto_loc29'), (30, 30, 30, 'html_loc30', 30, 'proto_loc30');
-
-# Insert 30 rows into searches_providers_serps_pipeline
-INSERT INTO searches_providers_serps_pipeline (pipeline_id, serp_id, keyword_id, retrieved_at, extracted_at)
-VALUES
-    (1, 1, 1, 1622505600, 1622592000), (2, 2, 2, 1622592000, 1622678400), (3, 3, 3, 1622678400, 1622764800),
-    (4, 4, 4, 1622764800, 1622851200), (5, 5, 5, 1622851200, 1622937600), (6, 6, 6, 1622937600, 1623024000),
-    (7, 7, 7, 1623024000, 1623110400), (8, 8, 8, 1623110400, 1623196800), (9, 9, 9, 1623196800, 1623283200),
-    (10, 10, 10, 1623283200, 1623369600), (11, 11, 11, 1623369600, 1623456000), (12, 12, 12, 1623456000, 1623542400),
-    (13, 13, 13, 1623542400, 1623628800), (14, 14, 14, 1623628800, 1623715200), (15, 15, 15, 1623715200, 1623801600),
-    (16, 16, 16, 1623801600, 1623888000), (17, 17, 17, 1623888000, 1623974400), (18, 18, 18, 1623974400, 1624060800),
-    (19, 19, 19, 1624060800, 1624147200), (20, 20, 20, 1624147200, 1624233600), (21, 21, 21, 1624233600, 1624320000),
-    (22, 22, 22, 1624320000, 1624406400), (23, 23, 23, 1624406400, 1624492800), (24, 24, 24, 1624492800, 1624579200),
-    (25, 25, 25, 1624579200, 1624665600), (26, 26, 26, 1624665600, 1624752000), (27, 27, 27, 1624752000, 1624838400),
-    (28, 28, 28, 1624838400, 1624924800), (29, 29, 29, 1624924800, 1625011200), (30, 30, 30, 1625011200, 1625097600);
-
-# Insert 30 rows into rankings
+# Insert data into rankings
 INSERT INTO rankings (ranking_id, search_id, keyword_id, retrieved_at, html_loc, extracted_at, extractor_version_id, proto_loc)
 VALUES
-    (1, 1, 1, FROM_UNIXTIME(1622505600), 'html_loc1', FROM_UNIXTIME(1622592000), 1, 'proto_loc1'),
-    (2, 2, 2, FROM_UNIXTIME(1622592000), 'html_loc2', FROM_UNIXTIME(1622678400), 2, 'proto_loc2'),
-    (3, 3, 3, FROM_UNIXTIME(1622678400), 'html_loc3', FROM_UNIXTIME(1622764800), 3, 'proto_loc3'),
-    (4, 4, 4, FROM_UNIXTIME(1622764800), 'html_loc4', FROM_UNIXTIME(1622851200), 4, 'proto_loc4'),
-    (5, 5, 5, FROM_UNIXTIME(1622851200), 'html_loc5', FROM_UNIXTIME(1622937600), 5, 'proto_loc5'),
-    (6, 6, 6, FROM_UNIXTIME(1622937600), 'html_loc6', FROM_UNIXTIME(1623024000), 6, 'proto_loc6'),
-    (7, 7, 7, FROM_UNIXTIME(1623024000), 'html_loc7', FROM_UNIXTIME(1623110400), 7, 'proto_loc7'),
-    (8, 8, 8, FROM_UNIXTIME(1623110400), 'html_loc8', FROM_UNIXTIME(1623196800), 8, 'proto_loc8'),
-    (9, 9, 9, FROM_UNIXTIME(1623196800), 'html_loc9', FROM_UNIXTIME(1623283200), 9, 'proto_loc9'),
-    (10, 10, 10, FROM_UNIXTIME(1623283200), 'html_loc10', FROM_UNIXTIME(1623369600), 10, 'proto_loc10'),
-    (11, 11, 11, FROM_UNIXTIME(1623369600), 'html_loc11', FROM_UNIXTIME(1623456000), 11, 'proto_loc11'),
-    (12, 12, 12, FROM_UNIXTIME(1623456000), 'html_loc12', FROM_UNIXTIME(1623542400), 12, 'proto_loc12'),
-    (13, 13, 13, FROM_UNIXTIME(1623542400), 'html_loc13', FROM_UNIXTIME(1623628800), 13, 'proto_loc13'),
-    (14, 14, 14, FROM_UNIXTIME(1623628800), 'html_loc14', FROM_UNIXTIME(1623715200), 14, 'proto_loc14'),
-    (15, 15, 15, FROM_UNIXTIME(1623715200), 'html_loc15', FROM_UNIXTIME(1623801600), 15, 'proto_loc15'),
-    (16, 16, 16, FROM_UNIXTIME(1623801600), 'html_loc16', FROM_UNIXTIME(1623888000), 16, 'proto_loc16'),
-    (17, 17, 17, FROM_UNIXTIME(1623888000), 'html_loc17', FROM_UNIXTIME(1623974400), 17, 'proto_loc17'),
-    (18, 18, 18, FROM_UNIXTIME(1623974400), 'html_loc18', FROM_UNIXTIME(1624060800), 18, 'proto_loc18'),
-    (19, 19, 19, FROM_UNIXTIME(1624060800), 'html_loc19', FROM_UNIXTIME(1624147200), 19, 'proto_loc19'),
-    (20, 20, 20, FROM_UNIXTIME(1624147200), 'html_loc20', FROM_UNIXTIME(1624233600), 20, 'proto_loc20'),
-    (21, 21, 21, FROM_UNIXTIME(1624233600), 'html_loc21', FROM_UNIXTIME(1624320000), 21, 'proto_loc21'),
-    (22, 22, 22, FROM_UNIXTIME(1624320000), 'html_loc22', FROM_UNIXTIME(1624406400), 22, 'proto_loc22'),
-    (23, 23, 23, FROM_UNIXTIME(1624406400), 'html_loc23', FROM_UNIXTIME(1624492800), 23, 'proto_loc23'),
-    (24, 24, 24, FROM_UNIXTIME(1624492800), 'html_loc24', FROM_UNIXTIME(1624579200), 24, 'proto_loc24'),
-    (25, 25, 25, FROM_UNIXTIME(1624579200), 'html_loc25', FROM_UNIXTIME(1624665600), 25, 'proto_loc25'),
-    (26, 26, 26, FROM_UNIXTIME(1624665600), 'html_loc26', FROM_UNIXTIME(1624752000), 26, 'proto_loc26'),
-    (27, 27, 27, FROM_UNIXTIME(1624752000), 'html_loc27', FROM_UNIXTIME(1624838400), 27, 'proto_loc27'),
-    (28, 28, 28, FROM_UNIXTIME(1624838400), 'html_loc28', FROM_UNIXTIME(1624924800), 28, 'proto_loc28'),
-    (29, 29, 29, FROM_UNIXTIME(1624924800), 'html_loc29', FROM_UNIXTIME(1625011200), 29, 'proto_loc29'),
-    (30, 30, 30, FROM_UNIXTIME(1625011200), 'html_loc30', FROM_UNIXTIME(1625097600), 30, 'proto_loc30');
+(1, 1, 1, NULL, '', NULL, NULL, ''),
+(2, 2, 1, NULL, '', NULL, NULL, ''),
+(3, 3, 1, NULL, '', NULL, NULL, ''),
+(4, 4, 1, NULL, '', NULL, NULL, ''),
+(5, 5, 1, NULL, '', NULL, NULL, ''),
+(6, 6, 1, NULL, '', NULL, NULL, ''),
+(7, 7, 1, NULL, '', NULL, NULL, ''),
+(8, 8, 1, NULL, '', NULL, NULL, ''),
+(9, 9, 1, NULL, '', NULL, NULL, ''),
+(10, 10, 1, NULL, '', NULL, NULL, ''),
+(11, 11, 1, NULL, '', NULL, NULL, ''),
+(12, 12, 1, NULL, '', NULL, NULL, ''),
+(13, 13, 1, NULL, '', NULL, NULL, ''),
+(14, 14, 1, NULL, '', NULL, NULL, ''),
+(15, 15, 1, NULL, '', NULL, NULL, ''),
+(16, 16, 1, NULL, '', NULL, NULL, ''),
+(17, 17, 1, NULL, '', NULL, NULL, ''),
+(18, 18, 1, NULL, '', NULL, NULL, ''),
+(19, 19, 1, NULL, '', NULL, NULL, ''),
+(20, 20, 1, NULL, '', NULL, NULL, '');
+
+# Insert data into searches_providers
+INSERT INTO searches_providers (search_provider_id, search_id, keyword_id)
+VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1),
+(4, 4, 1),
+(5, 5, 1),
+(6, 6, 1),
+(7, 7, 1),
+(8, 8, 1),
+(9, 9, 1),
+(10, 10, 1),
+(11, 11, 1),
+(12, 12, 1),
+(13, 13, 1),
+(14, 14, 1),
+(15, 15, 1),
+(16, 16, 1),
+(17, 17, 1),
+(18, 18, 1),
+(19, 19, 1),
+(20, 20, 1);
+
+# Insert data into searches_providers_serps
+INSERT INTO searches_providers_serps (serp_id, search_provider_id, keyword_id, html_loc, extractor_version_id, proto_loc)
+VALUES
+(1, 1, 1, 'html1', 1, 'proto1'),
+(2, 2, 1, 'html2', 2, 'proto2'),
+(3, 3, 1, 'html3', 3, 'proto3'),
+(4, 4, 1, 'html4', 4, 'proto4'),
+(5, 5, 1, 'html5', 5, 'proto5'),
+(6, 6, 1, 'html6', 6, 'proto6'),
+(7, 7, 1, 'html7', 7, 'proto7'),
+(8, 8, 1, 'html8', 8, 'proto8'),
+(9, 9, 1, 'html9', 9, 'proto9'),
+(10, 10, 1, 'html10', 10, 'proto10'),
+(11, 11, 1, 'html11', 11, 'proto11'),
+(12, 12, 1, 'html12', 12, 'proto12'),
+(13, 13, 1, 'html13', 13, 'proto13'),
+(14, 14, 1, 'html14', 14, 'proto14'),
+(15, 15, 1, 'html15', 15, 'proto15'),
+(16, 16, 1, 'html16', 16, 'proto16'),
+(17, 17, 1, 'html17', 17, 'proto17'),
+(18, 18, 1, 'html18', 18, 'proto18'),
+(19, 19, 1, 'html19', 19, 'proto19'),
+(20, 20, 1, 'html20', 20, 'proto20');
+
+# Insert data into searches_providers_serps_pipeline
+INSERT INTO searches_providers_serps_pipeline (pipeline_id, serp_id, keyword_id, retrieved_at, extracted_at)
+VALUES
+(1, 1, 1, UNIX_TIMESTAMP('2024-01-01 00:00:01'), UNIX_TIMESTAMP('2024-01-01 00:00:01')),
+(2, 2, 1, UNIX_TIMESTAMP('2024-01-02 00:00:01'), UNIX_TIMESTAMP('2024-01-02 00:00:01')),
+(3, 3, 1, UNIX_TIMESTAMP('2024-01-03 00:00:01'), UNIX_TIMESTAMP('2024-01-03 00:00:01')),
+(4, 4, 1, UNIX_TIMESTAMP('2024-01-04 00:00:01'), UNIX_TIMESTAMP('2024-01-04 00:00:01')),
+(5, 5, 1, UNIX_TIMESTAMP('2024-01-05 00:00:01'), UNIX_TIMESTAMP('2024-01-05 00:00:01')),
+(6, 6, 1, UNIX_TIMESTAMP('2024-01-06 00:00:01'), UNIX_TIMESTAMP('2024-01-06 00:00:01')),
+(7, 7, 1, UNIX_TIMESTAMP('2024-01-07 00:00:01'), UNIX_TIMESTAMP('2024-01-07 00:00:01')),
+(8, 8, 1, UNIX_TIMESTAMP('2024-01-08 00:00:01'), UNIX_TIMESTAMP('2024-01-08 00:00:01')),
+(9, 9, 1, UNIX_TIMESTAMP('2024-01-09 00:00:01'), UNIX_TIMESTAMP('2024-01-09 00:00:01')),
+(10, 10, 1, UNIX_TIMESTAMP('2024-01-10 00:00:01'), UNIX_TIMESTAMP('2024-01-10 00:00:01')),
+(11, 11, 1, UNIX_TIMESTAMP('2024-01-11 00:00:01'), UNIX_TIMESTAMP('2024-01-11 00:00:01')),
+(12, 12, 1, UNIX_TIMESTAMP('2024-01-12 00:00:01'), UNIX_TIMESTAMP('2024-01-12 00:00:01')),
+(13, 13, 1, UNIX_TIMESTAMP('2024-01-13 00:00:01'), UNIX_TIMESTAMP('2024-01-13 00:00:01')),
+(14, 14, 1, UNIX_TIMESTAMP('2024-01-14 00:00:01'), UNIX_TIMESTAMP('2024-01-14 00:00:01')),
+(15, 15, 1, UNIX_TIMESTAMP('2024-01-15 00:00:01'), UNIX_TIMESTAMP('2024-01-15 00:00:01')),
+(16, 16, 1, UNIX_TIMESTAMP('2024-01-16 00:00:01'), UNIX_TIMESTAMP('2024-01-16 00:00:01')),
+(17, 17, 1, UNIX_TIMESTAMP('2024-01-17 00:00:01'), UNIX_TIMESTAMP('2024-01-17 00:00:01')),
+(18, 18, 1, UNIX_TIMESTAMP('2024-01-18 00:00:01'), UNIX_TIMESTAMP('2024-01-18 00:00:01')),
+(19, 19, 1, UNIX_TIMESTAMP('2024-01-19 00:00:01'), UNIX_TIMESTAMP('2024-01-19 00:00:01')),
+(20, 20, 1, UNIX_TIMESTAMP('2024-01-20 00:00:01'), UNIX_TIMESTAMP('2024-01-20 00:00:01'));
 
 -- wait_authoritative rankings
 UPDATE rankings r
