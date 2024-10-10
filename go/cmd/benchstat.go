@@ -22,12 +22,14 @@ import (
 	vtbenchstat "github.com/vitessio/vt/go/benchstat"
 )
 
-var benchstat = &cobra.Command{
-	Use:     "benchstat old_file.json [new_file.json]",
-	Short:   "Compares and analyses a trace output",
-	Example: "vt benchstat old.json new.json",
-	Args:    cobra.RangeArgs(1, 2),
-	Run: func(cmd *cobra.Command, args []string) {
-		vtbenchstat.Run(args)
-	},
+func benchstat() *cobra.Command {
+	return &cobra.Command{
+		Use:     "benchstat old_file.json [new_file.json]",
+		Short:   "Compares and analyses a trace output",
+		Example: "vt benchstat old.json new.json",
+		Args:    cobra.RangeArgs(1, 2),
+		Run: func(cmd *cobra.Command, args []string) {
+			vtbenchstat.Run(args)
+		},
+	}
 }

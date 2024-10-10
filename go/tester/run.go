@@ -124,13 +124,13 @@ func getVschema(clusterInstance *cluster.LocalProcessCluster) func() []byte {
 		httpClient := &http.Client{Timeout: 5 * time.Second}
 		resp, err := httpClient.Get(clusterInstance.VtgateProcess.VSchemaURL)
 		if err != nil {
-			log.Errorf(err.Error())
+			log.Error(err.Error())
 			return nil
 		}
 		defer resp.Body.Close()
 		res, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Errorf(err.Error())
+			log.Error(err.Error())
 			return nil
 		}
 

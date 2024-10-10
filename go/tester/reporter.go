@@ -21,6 +21,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -86,7 +87,6 @@ func newFileReporter(name string, getVschema func() []byte) *FileReporter {
 		startTime:  time.Now(),
 		getVschema: getVschema,
 	}
-
 }
 
 func (e *FileReporter) Failed() bool {
@@ -148,7 +148,7 @@ func (e *FileReporter) AddInfo(info string) {
 }
 
 func (e *FileReporter) createErrorFileFor() *os.File {
-	qc := fmt.Sprintf("%d", e.currentQueryLineNum)
+	qc := strconv.Itoa(e.currentQueryLineNum)
 	err := os.MkdirAll(e.errorDir(), PERM)
 	exitIf(err, "creating error directory")
 	errorPath := path.Join(e.errorDir(), qc)

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Get a list of changed Go files
+GO_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$')
+
+# If no Go files are changed, skip the rest of the hook
+if [ -z "$GO_FILES" ]; then
+    echo "No Go files to process."
+    exit 0
+fi
+
+# 1. Run gofumpt in check mode to verify formatting
+echo "Checking gofumpt formatting..."
+gofumpt -l . | grep -q . && {
+    echo "Error: Unformatted code found. Please run 'make pretty'."
+    exit 1
+}
+
+# 2. Run goimports-reviser to verify formatting (without writing changes)
+echo "Checking goimports-reviser formatting..."
+for file in $GO_FILES; do
+    goimports-reviser -project-name $(go list -m) -rm-unused -set-alias -format $file -diff >/dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        echo "Error: Imports not correctly formatted in $file. Please run 'make pretty'."
+        exit 1
+    fi
+done
+
+# 3. Collect all unique directories from the changed Go files
+DIRS=$(echo "$GO_FILES" | xargs -n1 dirname | sort -u)
+
+# 4. Run golangci-lint on the directories containing the changed files
+echo "Running golangci-lint on changed file directories..."
+golangci-lint run $DIRS
+
+# Capture the result of golangci-lint
+if [[ $? -ne 0 ]]; then
+    echo "Linting failed. Please fix the errors."
+    exit 1
+fi
+
+# If everything passed, allow the commit
+echo "All checks passed."
+exit 0

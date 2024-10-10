@@ -107,16 +107,17 @@ func ParseQueries(qs ...Query) ([]Query, error) {
 			continue
 		}
 		// we will skip #comment and line with zero characters here
-		if s[0] == '#' {
+		switch {
+		case s[0] == '#':
 			q.Type = typ.Comment
-		} else if s[0:2] == "--" {
+		case s[0:2] == "--":
 			q.Type = typ.CommentWithCommand
 			if s[2] == ' ' {
 				s = s[3:]
 			} else {
 				s = s[2:]
 			}
-		} else if s[0] == '\n' {
+		case s[0] == '\n':
 			q.Type = typ.EmptyLine
 		}
 
@@ -125,6 +126,7 @@ func ParseQueries(qs ...Query) ([]Query, error) {
 			// by 'space' , '(' or 'delimiter'
 			var i int
 			for i = 0; i < len(s) && s[i] != '(' && s[i] != ' ' && s[i] != ';' && s[i] != '\n'; i++ {
+				// empty by design
 			}
 			if i > 0 {
 				q.FirstWord = s[:i]

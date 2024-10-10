@@ -32,8 +32,10 @@ import (
 	"github.com/vitessio/vt/go/tester/state"
 )
 
-var _ QueryRunner = (*Tracer)(nil)
-var _ QueryRunnerFactory = (*TracerFactory)(nil)
+var (
+	_ QueryRunner        = (*Tracer)(nil)
+	_ QueryRunnerFactory = (*TracerFactory)(nil)
+)
 
 type (
 	Tracer struct {
@@ -138,7 +140,7 @@ func (t *Tracer) trace(query data.Query) error {
 
 	// Extract the trace result and format it with indentation for pretty printing
 	var prettyTrace bytes.Buffer
-	if err := json.Indent(&prettyTrace, []byte(rs.Rows[0][0].ToString()), "", "  "); err != nil {
+	if err = json.Indent(&prettyTrace, []byte(rs.Rows[0][0].ToString()), "", "  "); err != nil {
 		return err
 	}
 
@@ -155,7 +157,7 @@ func (t *Tracer) trace(query data.Query) error {
 	t.alreadyWrittenTraces = true
 
 	// Write the fully constructed JSON entry to the file
-	if _, err := t.traceFile.Write(traceEntry.Bytes()); err != nil {
+	if _, err = t.traceFile.Write(traceEntry.Bytes()); err != nil {
 		return err
 	}
 

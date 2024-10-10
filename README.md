@@ -33,7 +33,8 @@ Here’s an example of running `vt tester`:
 vt tester --sharded t/basic.test  # Runs a test on a sharded database
 ```
 
-Custom schemas and configurations can be applied using directives. Check out `directives.test` for more examples.
+Custom schemas and configurations can be applied using directives. 
+Run `vt tester --help`, and check out `directives.test` for more examples.
 
 ## Tracing and Key Analysis
 

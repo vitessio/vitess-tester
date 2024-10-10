@@ -30,7 +30,7 @@ func testerCmd() *cobra.Command {
 		Short:   "Test the given workload against both Vitess and MySQL.",
 		Example: "vt tester ",
 		Args:    cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, args []string) {
 			cfg.Tests = args
 			vttester.Run(cfg)
 		},

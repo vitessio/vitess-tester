@@ -22,12 +22,14 @@ import (
 	"github.com/vitessio/vt/go/keys"
 )
 
-var keysCmd = &cobra.Command{
-	Use:     "keys file.test",
-	Short:   "Runs vexplain keys on all queries of the test file",
-	Example: "vt keys file.test",
-	Args:    cobra.ExactArgs(1),
-	RunE: func(_ *cobra.Command, args []string) error {
-		return keys.Run(args[0])
-	},
+func keysCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "keys file.test",
+		Short:   "Runs vexplain keys on all queries of the test file",
+		Example: "vt keys file.test",
+		Args:    cobra.ExactArgs(1),
+		RunE: func(_ *cobra.Command, args []string) error {
+			return keys.Run(args[0])
+		},
+	}
 }

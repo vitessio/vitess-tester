@@ -24,84 +24,89 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var tf1 = TraceFile{
-	Name: "test",
-	TracedQueries: []TracedQuery{{
-		Query:      "select * from music",
-		LineNumber: "1",
-		Trace: Trace{
-			OperatorType:       "Route",
-			Variant:            "Scatter",
-			NoOfCalls:          1,
-			AvgNumberOfRows:    16,
-			MedianNumberOfRows: 16,
-			ShardsQueried:      8,
-		},
-	}, {
-		Query:      "select tbl.foo, tbl2.bar from tbl join tbl2 on tbl.id = tbl2.id order by tbl.baz",
-		LineNumber: "2",
-		Trace: Trace{
-			OperatorType:       "Sort",
-			Variant:            "Memory",
-			NoOfCalls:          1,
-			AvgNumberOfRows:    16,
-			MedianNumberOfRows: 16,
-			Inputs: []Trace{{
-				OperatorType:       "Join",
-				Variant:            "Apply",
+func tf1() TraceFile {
+	return TraceFile{
+		Name: "test",
+		TracedQueries: []TracedQuery{{
+			Query:      "select * from music",
+			LineNumber: "1",
+			Trace: Trace{
+				OperatorType:       "Route",
+				Variant:            "Scatter",
+				NoOfCalls:          1,
+				AvgNumberOfRows:    16,
+				MedianNumberOfRows: 16,
+				ShardsQueried:      8,
+			},
+		}, {
+			Query:      "select tbl.foo, tbl2.bar from tbl join tbl2 on tbl.id = tbl2.id order by tbl.baz",
+			LineNumber: "2",
+			Trace: Trace{
+				OperatorType:       "Sort",
+				Variant:            "Memory",
 				NoOfCalls:          1,
 				AvgNumberOfRows:    16,
 				MedianNumberOfRows: 16,
 				Inputs: []Trace{{
-					OperatorType:       "Route",
-					Variant:            "Scatter",
+					OperatorType:       "Join",
+					Variant:            "Apply",
 					NoOfCalls:          1,
-					AvgNumberOfRows:    10,
-					MedianNumberOfRows: 10,
-					ShardsQueried:      8,
-				}, {
-					OperatorType:       "Route",
-					Variant:            "EqualUnique",
-					NoOfCalls:          10,
-					AvgNumberOfRows:    1,
-					MedianNumberOfRows: 1,
-					ShardsQueried:      10,
+					AvgNumberOfRows:    16,
+					MedianNumberOfRows: 16,
+					Inputs: []Trace{{
+						OperatorType:       "Route",
+						Variant:            "Scatter",
+						NoOfCalls:          1,
+						AvgNumberOfRows:    10,
+						MedianNumberOfRows: 10,
+						ShardsQueried:      8,
+					}, {
+						OperatorType:       "Route",
+						Variant:            "EqualUnique",
+						NoOfCalls:          10,
+						AvgNumberOfRows:    1,
+						MedianNumberOfRows: 1,
+						ShardsQueried:      10,
+					}},
 				}},
-			}},
-		},
-	}},
+			},
+		}},
+	}
 }
-var tf2 = TraceFile{
-	Name: "test",
-	TracedQueries: []TracedQuery{{
-		Query:      "select * from music",
-		LineNumber: "1",
-		Trace: Trace{
-			OperatorType:       "Route",
-			Variant:            "Scatter",
-			NoOfCalls:          1,
-			AvgNumberOfRows:    16,
-			MedianNumberOfRows: 16,
-			ShardsQueried:      7,
-		},
-	}, {
-		Query:      "select tbl.foo, tbl2.bar from tbl join tbl2 on tbl.id = tbl2.id order by tbl.baz",
-		LineNumber: "2",
-		Trace: Trace{
-			OperatorType:       "Route",
-			Variant:            "Scatter",
-			NoOfCalls:          1,
-			AvgNumberOfRows:    16,
-			MedianNumberOfRows: 16,
-			ShardsQueried:      8,
-		},
-	}},
+
+func tf2() TraceFile {
+	return TraceFile{
+		Name: "test",
+		TracedQueries: []TracedQuery{{
+			Query:      "select * from music",
+			LineNumber: "1",
+			Trace: Trace{
+				OperatorType:       "Route",
+				Variant:            "Scatter",
+				NoOfCalls:          1,
+				AvgNumberOfRows:    16,
+				MedianNumberOfRows: 16,
+				ShardsQueried:      7,
+			},
+		}, {
+			Query:      "select tbl.foo, tbl2.bar from tbl join tbl2 on tbl.id = tbl2.id order by tbl.baz",
+			LineNumber: "2",
+			Trace: Trace{
+				OperatorType:       "Route",
+				Variant:            "Scatter",
+				NoOfCalls:          1,
+				AvgNumberOfRows:    16,
+				MedianNumberOfRows: 16,
+				ShardsQueried:      8,
+			},
+		}},
+	}
 }
 
 func TestSummary(t *testing.T) {
 	t.Run("tf1", func(t *testing.T) {
 		sb := &strings.Builder{}
-		printTraceSummary(sb, 80, noHighlight, tf1)
+		printTraceSummary(sb, 80, noHighlight, tf1())
 		assert.Equal(t, `Query: select * from music
 Line # 1
 +-------------+-----------+----------------+----------------+
@@ -122,7 +127,7 @@ Line # 2
 
 	t.Run("tf2", func(t *testing.T) {
 		sb := &strings.Builder{}
-		printTraceSummary(sb, 80, noHighlight, tf2)
+		printTraceSummary(sb, 80, noHighlight, tf2())
 		assert.Equal(t, `Query: select * from music
 Line # 1
 +-------------+-----------+----------------+----------------+
@@ -144,7 +149,7 @@ Line # 2
 
 func TestCompareFiles(t *testing.T) {
 	sb := &strings.Builder{}
-	compareTraces(sb, 80, noHighlight, tf1, tf2)
+	compareTraces(sb, 80, noHighlight, tf1(), tf2())
 	s := sb.String()
 	want := `Query: select * from music
 Line # 1 (significant)

@@ -50,7 +50,10 @@ func readTraceFile(fileName string) TraceFile {
 	}
 
 	// Reset the file pointer to the beginning
-	file.Seek(0, io.SeekStart)
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		exit("Error rewinding file: " + err.Error())
+	}
 	decoder = json.NewDecoder(file)
 
 	// Skip the opening bracket again
@@ -66,11 +69,10 @@ func readTraceFile(fileName string) TraceFile {
 		return readTracedQueryFile(decoder, fileName)
 	} else if err := json.Unmarshal(peekObj, &analysedQuery); err == nil && analysedQuery.QueryStructure != "" {
 		return readAnalysedQueryFile(decoder, fileName)
-	} else {
-		exit("Unknown file format")
 	}
 
-	return TraceFile{} // This line will never be reached, but it's here to satisfy the compiler
+	exit("Unknown file format")
+	panic("unreachable")
 }
 
 func readTracedQueryFile(decoder *json.Decoder, fileName string) TraceFile {

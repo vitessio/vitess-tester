@@ -22,25 +22,26 @@ import (
 	"os/exec"
 )
 
-var environmentVars = []string{
-	"VTDATAROOT",
-	"VTROOT",
-}
-var neededBinaries = []string{
-	"vtgate",
-	"vttablet",
-	"vtctldclient",
-	"mysqlctl",
-	"mysqld",
-	"etcd",
-}
-
 // CheckEnvironment checks if the required environment variables are set
 func CheckEnvironment() error {
+	environmentVars := []string{
+		"VTDATAROOT",
+		"VTROOT",
+	}
+
 	for _, envVar := range environmentVars {
 		if os.Getenv(envVar) == "" {
 			return fmt.Errorf("environment variable %s is not set\nTry sourcing the dev.env file in the vitess directory", envVar)
 		}
+	}
+
+	neededBinaries := []string{
+		"vtgate",
+		"vttablet",
+		"vtctldclient",
+		"mysqlctl",
+		"mysqld",
+		"etcd",
 	}
 
 	for _, binary := range neededBinaries {

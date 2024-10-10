@@ -18,12 +18,7 @@ package state
 
 import (
 	"fmt"
-
-	"vitess.io/vitess/go/test/endtoend/utils"
 )
-
-// checkBinaryIsAtLeast is a global variable to make it easy to test by changing the function
-var checkBinaryIsAtLeast func(majorVersion int, binary string) bool = utils.BinaryIsAtLeastAtVersion
 
 const (
 	None     theState = 0
@@ -37,8 +32,16 @@ const (
 
 type theState uint8
 
+func NewState(checkBinaryIsAtLeast func(majorVersion int, binary string) bool) *State {
+	return &State{
+		checkBinaryIsAtLeast: checkBinaryIsAtLeast,
+		state:                None,
+	}
+}
+
 type State struct {
-	state theState
+	state                theState
+	checkBinaryIsAtLeast func(majorVersion int, binary string) bool
 
 	skipBinary  string
 	skipVersion int
@@ -87,7 +90,6 @@ func (s *State) endState(oldState theState) error {
 	}
 	s.state = None
 	return nil
-
 }
 
 func (s *State) isSet(state theState) bool {
@@ -174,7 +176,7 @@ func (s *State) ShouldSkip() bool {
 		panic("skip below version state is active but skip binary is empty")
 	}
 
-	okayToRun := checkBinaryIsAtLeast(s.skipVersion, s.skipBinary)
+	okayToRun := s.checkBinaryIsAtLeast(s.skipVersion, s.skipBinary)
 	s.skipBinary = ""
 	s.state = None
 	return !okayToRun

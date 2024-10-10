@@ -19,14 +19,12 @@ package tester
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
+
 	"vitess.io/vitess/go/mysql"
 	"vitess.io/vitess/go/test/endtoend/cluster"
 	"vitess.io/vitess/go/test/endtoend/utils"
@@ -54,8 +52,7 @@ type (
 
 		state *state.State
 
-		reporter             Reporter
-		alreadyWrittenTraces bool // we need to keep track of it is the first trace or not, to add commas in between traces
+		reporter Reporter
 
 		qr QueryRunner
 	}
@@ -91,7 +88,7 @@ func NewTester(
 		vschema:         vschema,
 		vschemaFile:     vschemaFile,
 		olap:            olap,
-		state:           &state.State{},
+		state:           state.NewState(utils.BinaryIsAtLeastAtVersion),
 	}
 
 	mcmp, err := utils.NewMySQLCompare(t.reporter, t.vtParams, t.mysqlParams)
@@ -122,26 +119,7 @@ func (t *Tester) postProcess() {
 	t.curr.Close()
 }
 
-var PERM os.FileMode = 0755
-
-func (t *Tester) getVschema() func() []byte {
-	return func() []byte {
-		httpClient := &http.Client{Timeout: 5 * time.Second}
-		resp, err := httpClient.Get(t.clusterInstance.VtgateProcess.VSchemaURL)
-		if err != nil {
-			log.Errorf(err.Error())
-			return nil
-		}
-		defer resp.Body.Close()
-		res, err := io.ReadAll(resp.Body)
-		if err != nil {
-			log.Errorf(err.Error())
-			return nil
-		}
-
-		return res
-	}
-}
+const PERM os.FileMode = 0o755
 
 func (t *Tester) Run() error {
 	t.preProcess()
@@ -326,14 +304,14 @@ func (t *Tester) autoVSchema() bool {
 }
 
 func getShardingKeysForTable(create *sqlparser.CreateTable) (sks []sqlparser.IdentifierCI) {
-	var allIdCI []sqlparser.IdentifierCI
+	var allIDCI []sqlparser.IdentifierCI
 	// first we normalize the primary keys
 	for _, col := range create.TableSpec.Columns {
 		if col.Type.Options.KeyOpt == sqlparser.ColKeyPrimary {
 			create.TableSpec.Indexes = append(create.TableSpec.Indexes, newPrimaryKeyIndexDefinitionSingleColumn(col.Name))
 			col.Type.Options.KeyOpt = sqlparser.ColKeyNone
 		}
-		allIdCI = append(allIdCI, col.Name)
+		allIDCI = append(allIDCI, col.Name)
 	}
 
 	// and now we can fetch the primary keys
@@ -347,7 +325,7 @@ func getShardingKeysForTable(create *sqlparser.CreateTable) (sks []sqlparser.Ide
 
 	// if we have no primary keys, we'll use all columns as the sharding keys
 	if len(sks) == 0 {
-		sks = allIdCI
+		sks = allIDCI
 	}
 	return
 }
@@ -369,10 +347,10 @@ func (t *Tester) handleCreateTable(create *sqlparser.CreateTable) func() {
 		ColumnVindexes: []*vindexes.ColumnVindex{shardingKeys},
 	}
 
-	ksJson, err := json.Marshal(ks)
+	ksJSON, err := json.Marshal(ks)
 	exitIf(err, "marshalling keyspace schema")
 
-	err = t.clusterInstance.VtctldClientProcess.ApplyVSchema(t.ksNames[0], string(ksJson))
+	err = t.clusterInstance.VtctldClientProcess.ApplyVSchema(t.ksNames[0], string(ksJSON))
 	exitIf(err, "applying vschema")
 
 	return func() {

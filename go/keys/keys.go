@@ -70,8 +70,7 @@ func run(out io.Writer, fileName string) error {
 		}
 	}
 
-	ql.writeJsonTo(out)
-	return nil
+	return ql.writeJSONTo(out)
 }
 
 func process(q data.Query, si *schemaInfo, ql *queryList) {
@@ -137,7 +136,7 @@ func (ql *queryList) processQuery(ctx *plancontext.PlanningContext, ast sqlparse
 }
 
 // writeJsonTo writes the query list, sorted by the first line number of the query, to the given writer.
-func (ql *queryList) writeJsonTo(w io.Writer) error {
+func (ql *queryList) writeJSONTo(w io.Writer) error {
 	values := slices.Collect(maps.Values(ql.queries))
 	sort.Slice(values, func(i, j int) bool {
 		return values[i].LineNumbers[0] < values[j].LineNumbers[0]

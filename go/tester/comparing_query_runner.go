@@ -17,6 +17,7 @@ limitations under the License.
 package tester
 
 import (
+	"errors"
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
@@ -127,7 +128,7 @@ func (nqr *ComparingQueryRunner) execAndExpectErr(query string) error {
 	_, err := nqr.comparer.ExecAllowAndCompareError(query, utils.CompareOptions{CompareColumnNames: true})
 	if err == nil {
 		// If we expected an error, but didn't get one, return an error
-		return fmt.Errorf("expected error, but got none")
+		return errors.New("expected error, but got none")
 	}
 	return nil
 }
@@ -153,7 +154,7 @@ func (nqr *ComparingQueryRunner) executeReference(query string, ast sqlparser.St
 	for _, ks := range nqr.cluster.Keyspaces {
 		if ks.Name == tbl.Keyspace.Name {
 			for _, shard := range ks.Shards {
-				_, err := nqr.comparer.VtConn.ExecuteFetch(fmt.Sprintf("use `%s/%s`", ks.Name, shard.Name), 1000, true)
+				_, err = nqr.comparer.VtConn.ExecuteFetch(fmt.Sprintf("use `%s/%s`", ks.Name, shard.Name), 1000, true)
 				if err != nil {
 					return fmt.Errorf("error setting keyspace/shard: %w", err)
 				}

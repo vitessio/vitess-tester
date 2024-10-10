@@ -20,20 +20,16 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	"time"
 )
 
 // main generates inserts for the TPC-H tables
 // The size factor is specified by the user, and the inserts are generated such that they fit
 // within the WHERE clauses of the test queries in t/tpch.test
 func main() {
-	// Set the random seed
-	rand.Seed(time.Now().UnixNano())
-
 	// Specify the size factor
 	var sizeFactor int
 	fmt.Print("Enter size factor: ")
-	fmt.Scan(&sizeFactor)
+	_, _ = fmt.Scan(&sizeFactor)
 
 	// Helper function to join values
 	joinValues := func(values []string) string {

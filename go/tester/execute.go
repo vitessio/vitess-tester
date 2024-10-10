@@ -19,6 +19,7 @@ package tester
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -34,9 +35,7 @@ type RawKeyspaceVindex struct {
 	Keyspaces map[string]interface{} `json:"keyspaces"`
 }
 
-var (
-	vschema vindexes.VSchema
-)
+var vschema vindexes.VSchema
 
 const (
 	defaultKeyspaceName = "mysqltest"
@@ -79,7 +78,7 @@ func SetupCluster(
 	vschemaFile, vtexplainVschemaFile string,
 	sharded bool,
 	numberOfShards int,
-) (clusterInstance *cluster.LocalProcessCluster, vtParams, mysqlParams mysql.ConnParams, ksNames []string, close func()) {
+) (clusterInstance *cluster.LocalProcessCluster, vtParams, mysqlParams mysql.ConnParams, ksNames []string, closerFunc func()) {
 	clusterInstance = cluster.NewCluster(defaultCellName, "localhost")
 
 	errCheck := func(err error) {
@@ -176,15 +175,16 @@ func generateShardRanges(numberOfShards int) []string {
 	ranges := make([]string, numberOfShards)
 	step := 0x100 / numberOfShards
 
-	for i := 0; i < numberOfShards; i++ {
+	for i := range numberOfShards {
 		start := i * step
 		end := (i + 1) * step
 
-		if i == 0 {
+		switch {
+		case i == 0:
 			ranges[i] = fmt.Sprintf("-%02x", end)
-		} else if i == numberOfShards-1 {
+		case i == numberOfShards-1:
 			ranges[i] = fmt.Sprintf("%02x-", start)
-		} else {
+		default:
 			ranges[i] = fmt.Sprintf("%02x-%02x", start, end)
 		}
 	}
@@ -212,11 +212,12 @@ func getKeyspaces(vschemaFile, vtexplainVschemaFile, keyspaceName string, sharde
 		Keyspaces: map[string]interface{}{},
 	}
 
-	if vschemaFile != "" {
+	switch {
+	case vschemaFile != "":
 		ksRaw = readVschema(vschemaFile, false)
-	} else if vtexplainVschemaFile != "" {
+	case vtexplainVschemaFile != "":
 		ksRaw = readVschema(vtexplainVschemaFile, true)
-	} else {
+	default:
 		// auto-vschema
 		vschema = defaultVschema(keyspaceName)
 		vschema.Keyspaces[keyspaceName].Keyspace.Sharded = sharded
@@ -262,7 +263,7 @@ func getSrvVschema(file string, wrap bool) ([]byte, *vschemapb.SrvVSchema) {
 	exitIf(err, "unmarshalling vschema")
 
 	if len(srvVSchema.Keyspaces) == 0 {
-		exitIf(fmt.Errorf("no keyspaces found"), "loading vschema")
+		exitIf(errors.New("no keyspaces found"), "loading vschema")
 	}
 
 	return vschemaStr, &srvVSchema
@@ -271,7 +272,7 @@ func getSrvVschema(file string, wrap bool) ([]byte, *vschemapb.SrvVSchema) {
 func loadVschema(srvVschema *vschemapb.SrvVSchema, rawVschema []byte) (rkv RawKeyspaceVindex, err error) {
 	vschema = *(vindexes.BuildVSchema(srvVschema, sqlparser.NewTestParser()))
 	if len(vschema.Keyspaces) == 0 {
-		err = fmt.Errorf("no keyspace defined in vschema")
+		err = errors.New("no keyspace defined in vschema")
 		return
 	}
 

@@ -60,7 +60,21 @@ values (1, 'John Doe', 110001)
      , (14, 'Charlie', 110014)
      , (15, 'David', 110015)
      , (16, 'Frank', 110008)
-     , (17, 'Grace', 110009);
+     , (17, 'Grace', 110009)
+     , (18, 'Isaac', 110010)
+     , (19, 'Julia', 110011)
+     , (20, 'Kevin', 110012)
+     , (21, 'Laura', 110013)
+     , (22, 'Michael', 110014)
+     , (23, 'Nina', 110015)
+     , (24, 'Oscar', 110001)
+     , (25, 'Patricia', 110002)
+     , (26, 'Quincy', 110003)
+     , (27, 'Rachel', 110004)
+     , (28, 'Samuel', 110005)
+     , (29, 'Tina', 110006)
+     , (30, 'Ulysses', 110007);
+
 
 insert into orders(order_id, customer_id, order_date, order_amount)
 values (1, 1, '2020-01-01', 1000),
@@ -94,7 +108,26 @@ values (1, 1, '2020-01-01', 1000),
        (29, 12, '2020-01-29', 29000),
        (30, 13, '2020-01-30', 30000),
        (31, 14, '2020-01-31', 31000),
-       (32, 15, '2020-02-01', 32000);
+       (32, 15, '2020-02-01', 32000),
+       (33, 16, '2020-02-02', 33000),
+       (34, 17, '2020-02-03', 34000),
+       (35, 18, '2020-02-04', 35000),
+       (36, 19, '2020-02-05', 36000),
+       (37, 20, '2020-02-06', 37000),
+       (38, 21, '2020-02-07', 38000),
+       (39, 22, '2020-02-08', 39000),
+       (40, 23, '2020-02-09', 40000),
+       (41, 24, '2020-02-10', 41000),
+       (42, 25, '2020-02-11', 42000),
+       (43, 26, '2020-02-12', 43000),
+       (44, 27, '2020-02-13', 44000),
+       (45, 28, '2020-02-14', 45000),
+       (46, 29, '2020-02-15', 46000),
+       (47, 30, '2020-02-16', 47000),
+       (48, 1, '2020-02-17', 48000),
+       (49, 2, '2020-02-18', 49000),
+       (50, 3, '2020-02-19', 50000);
+
 
 select customer_id, customer_pincode
 from customers
@@ -108,3 +141,44 @@ group by c.customer_id;
 select c.customer_id, p.area_name
 from customers c
          join pincode_areas p on c.customer_pincode = p.pincode;
+
+SELECT DISTINCT c.customer_id, c.customer_name
+FROM customers c
+         JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_amount > (SELECT AVG(order_amount)
+                        FROM orders);
+
+SELECT c.customer_id, c.customer_name
+FROM customers c
+         LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+SELECT c.customer_id, c.customer_name, SUM(o.order_amount) as total_amount
+FROM customers c
+         JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY total_amount DESC
+LIMIT 5;
+
+SELECT DISTINCT c1.customer_id, c1.customer_name
+FROM customers c1
+         JOIN orders o1 ON c1.customer_id = o1.customer_id
+         JOIN orders o2 ON c1.customer_id = o2.customer_id
+WHERE DATEDIFF(o2.order_date, o1.order_date) = 1;
+
+
+SELECT DATE_FORMAT(order_date, '%Y-%m') AS month,
+       COUNT(DISTINCT customer_id)      AS unique_customers,
+       COUNT(*)                         AS total_orders,
+       SUM(order_amount)                AS total_sales
+FROM orders
+GROUP BY month
+ORDER BY month;
+
+SELECT order_count,
+       COUNT(*) AS customer_count
+FROM (SELECT customer_id, COUNT(*) AS order_count
+      FROM orders
+      GROUP BY customer_id) AS customer_orders
+GROUP BY order_count
+ORDER BY order_count;

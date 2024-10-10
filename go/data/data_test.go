@@ -14,7 +14,6 @@
 package data
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,8 +25,8 @@ func TestParseQueries(t *testing.T) {
 	sql := "select * from t;"
 
 	if q, err := ParseQueries(Query{Query: sql, Line: 1}); err == nil {
-		assert.Equal(t, q[0].Type, typ.Query, fmt.Sprintf("Expected: %d, got: %d", typ.Query, q[0].Type))
-		assert.Equal(t, q[0].Query, sql, fmt.Sprintf("Expected: %s, got: %s", sql, q[0].Query))
+		assert.Equalf(t, typ.Query, q[0].Type, "Expected: %d, got: %d", typ.Query, q[0].Type)
+		assert.Equalf(t, q[0].Query, sql, "Expected: %s, got: %s", sql, q[0].Query)
 	} else {
 		t.Fatalf("error is not nil. %v", err)
 	}

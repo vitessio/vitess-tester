@@ -22,25 +22,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var root = &cobra.Command{
-	Use:   "vt",
-	Short: "Utils tools for testing, running and benchmarking Vitess.",
-}
-
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	// rootCmd represents the base command when called without any subcommands
+	root := &cobra.Command{
+		Use:   "vt",
+		Short: "Utils tools for testing, running and benchmarking Vitess.",
+	}
+
+	root.CompletionOptions.HiddenDefaultCmd = true
+
+	root.AddCommand(benchstat())
+	root.AddCommand(testerCmd())
+	root.AddCommand(keysCmd())
+
 	err := root.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	root.CompletionOptions.HiddenDefaultCmd = true
-
-	root.AddCommand(benchstat)
-	root.AddCommand(testerCmd())
-	root.AddCommand(keysCmd)
 }
