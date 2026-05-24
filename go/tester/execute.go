@@ -119,9 +119,9 @@ func SetupCluster(cfg Config) (_ ClusterInfo, err error) {
 	vtParams := clusterInstance.GetVTParams(ksNames[0])
 
 	var mysqlParams *mysql.ConnParams
-	var closers []func()
+	var closer func()
 	if cfg.Compare {
-		mysqlParams, closers, err = setupExternalMySQL(keyspaces, clusterInstance)
+		mysqlParams, closer, err = setupExternalMySQL(keyspaces, clusterInstance)
 		if err != nil {
 			return ClusterInfo{}, err
 		}
@@ -135,7 +135,7 @@ func SetupCluster(cfg Config) (_ ClusterInfo, err error) {
 		vschema:         vschema,
 		closer: func() {
 			clusterInstance.Teardown()
-			for _, closer := range closers {
+			if closer != nil {
 				closer()
 			}
 		},
@@ -165,8 +165,7 @@ func startKeyspace(cfg Config, vschema *vindexes.VSchema, keyspace *cluster.Keys
 	return nil
 }
 
-// TODO: having a single connection is not correct if we are dealing with multiple mysql databases.
-func setupExternalMySQL(keyspaces []*cluster.Keyspace, clusterInstance *cluster.LocalProcessCluster) (_ *mysql.ConnParams, closers []func(), err error) {
+func setupExternalMySQL(keyspaces []*cluster.Keyspace, clusterInstance *cluster.LocalProcessCluster) (_ *mysql.ConnParams, closer func(), err error) {
 	// Create the mysqld server we will use to compare the results.
 	// We go through all the keyspaces we found in the vschema, and
 	// simply create the mysqld process during the first iteration with
@@ -185,9 +184,9 @@ func setupExternalMySQL(keyspaces []*cluster.Keyspace, clusterInstance *cluster.
 			if err != nil {
 				return nil, nil, err
 			}
+			continue
 		}
 
-		var closer func()
 		mysqlParamsValue, closer, err = utils.NewMySQL(clusterInstance, keyspace.Name, "")
 		if err != nil {
 			return nil, nil, err
@@ -196,9 +195,8 @@ func setupExternalMySQL(keyspaces []*cluster.Keyspace, clusterInstance *cluster.
 		if err != nil {
 			return nil, nil, err
 		}
-		closers = append(closers, closer)
 	}
-	return &mysqlParamsValue, closers, nil
+	return &mysqlParamsValue, closer, nil
 }
 
 func generateShardRanges(numberOfShards int) []string {
