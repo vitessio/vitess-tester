@@ -151,13 +151,13 @@ func startKeyspace(cfg Config, vschema *vindexes.VSchema, keyspace *cluster.Keys
 	if vschemaKs.Keyspace.Sharded {
 		shardRanges := generateShardRanges(cfg.GetNumberOfShards())
 		fmt.Printf("starting sharded keyspace: '%s' with shards %v\n", keyspace.Name, shardRanges)
-		err := clusterInstance.StartKeyspace(*keyspace, shardRanges, 0, false)
+		err := clusterInstance.StartKeyspace(*keyspace, shardRanges, 0, false, "")
 		if err != nil {
 			return err
 		}
 	} else {
 		fmt.Printf("starting unsharded keyspace: '%s'\n", keyspace.Name)
-		err := clusterInstance.StartUnshardedKeyspace(*keyspace, 0, false)
+		err := clusterInstance.StartUnshardedKeyspace(*keyspace, 0, false, "")
 		if err != nil {
 			return err
 		}

@@ -23,6 +23,8 @@ import (
 	"strconv"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 type (
@@ -116,9 +118,23 @@ func compareTraces(out io.Writer, termWidth int, highLighter Highlighter, tq1, t
 		}
 		totalQueries++
 
-		table := tablewriter.NewWriter(out)
-		table.SetHeader([]string{"Metric", tq1.Name, tq2.Name, "Diff", "% Change"})
-		table.SetAutoFormatHeaders(false)
+		table := tablewriter.NewTable(
+			out,
+			tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{
+				Symbols: tw.NewSymbols(tw.StyleASCII),
+			})),
+		)
+		table.Configure(func(cfg *tablewriter.Config) {
+			cfg.Header.Formatting.AutoFormat = tw.Off
+			cfg.Row.Alignment.PerColumn = []tw.Align{
+				tw.AlignLeft,
+				tw.AlignRight,
+				tw.AlignRight,
+				tw.AlignRight,
+				tw.AlignLeft,
+			}
+		})
+		table.Header("Metric", tq1.Name, tq2.Name, "Diff", "% Change")
 
 		m1 := compareMetric(table, "Route Calls", s1.RouteCalls, s2.RouteCalls)
 		m2 := compareMetric(table, "Rows Sent", s1.RowsSent, s2.RowsSent)
@@ -188,14 +204,22 @@ func printTraceSummary(out io.Writer, termWidth int, highLighter Highlighter, tq
 		}
 		querySummary := summary[query.Query]
 		printQuery(out, termWidth, highLighter, query, false)
-		table := tablewriter.NewWriter(out)
-		table.SetAutoFormatHeaders(false)
-		table.SetHeader([]string{
+		table := tablewriter.NewTable(
+			out,
+			tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{
+				Symbols: tw.NewSymbols(tw.StyleASCII),
+			})),
+		)
+		table.Configure(func(cfg *tablewriter.Config) {
+			cfg.Header.Formatting.AutoFormat = tw.Off
+			cfg.Row.Alignment.Global = tw.AlignRight
+		})
+		table.Header(
 			"Route Calls",
 			"Rows Sent",
 			"Rows In Memory",
 			"Shards Queried",
-		})
+		)
 		table.Append([]string{
 			strconv.Itoa(querySummary.RouteCalls),
 			strconv.Itoa(querySummary.RowsSent),
